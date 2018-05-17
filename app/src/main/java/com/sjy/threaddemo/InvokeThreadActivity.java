@@ -1,20 +1,19 @@
 package com.sjy.threaddemo;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.sjy.threaddemo.adapter.MainAdapter;
+import com.sjy.threaddemo.adapter.InvokeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class InvokeThreadActivity extends Activity {
     private List<String> mList;
-    private MainAdapter adapter;
+    private InvokeAdapter adapter;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     @Override
@@ -25,17 +24,16 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.recyclerView);
 
         mList = new ArrayList<>();
-        mList.add("四种线程调用");
-        mList.add("线程同步");
+        mList.add("方式1：Handler+Thread");
+        mList.add("方式2：Asynctask");
+        mList.add("方式3：线程池");
+        mList.add("方式4：IntentService");
 
-        adapter =new MainAdapter(this, mList, new MainAdapter.OnItemClick() {
+        adapter =new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
             public void onItemClick(int position) {
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(MainActivity.this, InvokeThreadActivity.class);
-                        startActivity(intent);
-
                         break;
                     case 1:
                         break;
