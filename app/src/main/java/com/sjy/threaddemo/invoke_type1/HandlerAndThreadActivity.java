@@ -13,6 +13,7 @@ import com.sjy.threaddemo.BaseActivity;
 import com.sjy.threaddemo.Constants;
 import com.sjy.threaddemo.R;
 import com.sjy.threaddemo.adapter.InvokeAdapter;
+import com.sjy.threaddemo.invoke_type1.threadHandler.ThreadHandlerActivity;
 import com.sjy.threaddemo.invoke_type1.userDefineThread.UserDefineThreadActivity;
 
 import java.util.ArrayList;
@@ -50,8 +51,8 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
         mList.add("2-Thread的两种方式：implement Runnable");
         mList.add("1-Thread的两种方式：new 自定义Thread");
         mList.add("2-Thread的两种方式：implement 自定义Runnable");
-        mList.add("特殊Thread：HandlerThread");
         mList.add("更多 自定义Thread");
+        mList.add("特殊Thread：HandlerThread");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
@@ -75,12 +76,17 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
                         tv_content.setText(null);
                         type3();
                         break;
-
-                    case 5:
-
+                    case 4:
                         Intent intent = new Intent(HandlerAndThreadActivity.this, UserDefineThreadActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+
+                        break;
+
+                    case 5:
+                        Intent intent1 = new Intent(HandlerAndThreadActivity.this, ThreadHandlerActivity.class);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent1);
 
                         break;
 
@@ -109,6 +115,9 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
             case Constants.TYPE2:
                 tv_content.setText("更新主线程UI-->" + (String) msg.obj);
                 break;
+            case Constants.TYPE3:
+                tv_content.setText("更新主线程UI-->" + (String) msg.obj);
+                break;
 
         }
     }
@@ -130,6 +139,7 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
                     total = i + total;
                 }
                 long time1 = System.currentTimeMillis();
+                //
                 Message message = Message.obtain();
                 message.what = Constants.TYPE0;
                 message.obj = "100000累加耗时：" + (time1 - time0) + "ms" + "-->结果=" + total;
@@ -215,9 +225,34 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
      * 2-Thread的两种方式：implement 自定义Runnable
      */
     private void type3() {
-        MyThread2 thread1 = new MyThread2("name1");
+
+        Thread thread1 = new Thread(new MyRunnable());
         thread1.start();
-        Toast.makeText(this, thread1.getName() + "--" + thread1.getId(), Toast.LENGTH_LONG).show();
+    }
+
+    private class MyRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            //100累减到0
+            int i =100;
+            long time0 = System.currentTimeMillis();
+            while(i>=0){
+                i -=1;
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            long time1 = System.currentTimeMillis();
+            //返回
+            Message message = Message.obtain();
+            message.what = Constants.TYPE3;
+            message.obj = "100累减（每次等待10ms） 耗时：" + (time1 - time0) + "ms";
+            handler.sendMessage(message);
+
+        }
     }
 
 
