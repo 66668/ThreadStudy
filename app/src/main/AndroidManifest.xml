@@ -16,9 +16,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--四种线程调用 主界面-->
         <activity
             android:name=".InvokeThreadActivity"
             android:screenOrientation="portrait" />
+
+        <!--方式1：handler+thread-->
+         <activity
+            android:name=".invoke_type1.HandlerAndThreadActivity"
+            android:screenOrientation="portrait" />
+
+        <!--方式1：handler+thread-自定义Thread-->
+         <activity
+            android:name=".invoke_type1.userDefineThread.UserDefineThreadActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
