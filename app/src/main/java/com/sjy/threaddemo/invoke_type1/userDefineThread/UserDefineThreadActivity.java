@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sjy.threaddemo.BaseActivity;
 import com.sjy.threaddemo.Constants;
@@ -19,7 +20,7 @@ import java.util.List;
  * 1-Thread的两种方式：new 自定义Thread
  * <p>
  * 自定义Thread的研究
- * 当自定义Thread(Runnable run1)类中有重写的run方法，执行顺序是；先执行参数run1，再执行重写的run方法
+ * （1）当自定义Thread(Runnable run1)类中还有重写的run方法，执行顺序是；先执行参数run1，再执行重写的run方法
  *
  */
 public class UserDefineThreadActivity extends BaseActivity {
@@ -47,7 +48,7 @@ public class UserDefineThreadActivity extends BaseActivity {
         mList.add("构造02--Thread(String name)");
         mList.add("构造03--Thread(Runnable target)");
         mList.add("构造04--Thread(Runnable target, String name)");
-        mList.add("构造05--Thread(ThreadGroup group, Runnable target)");
+        mList.add("构造05--Thread(ThreadGroup group, Runnable target, String name, long stackSize)");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
@@ -81,13 +82,39 @@ public class UserDefineThreadActivity extends BaseActivity {
                             }
                         });
                         thread2.start();
+
+
                         break;
                     case 3:
                         tv_content.setText(null);
+                        builder = new StringBuilder();
 
+                        MyThread2 thread3 = new MyThread2(new Runnable() {
+                            @Override
+                            public void run() {
+                                String str = "这是自定义线程的run方法，new Thread(Runnable target,String name)先执行";
+                                builder.append(str);
+
+                                //
+                                Message message = Message.obtain();
+                                message.what = Constants.TYPE3;
+                                message.obj = str;
+                                handler.sendMessage(message);
+                            }
+                        }, "name_SJY03");
+                        thread3.start();
                         break;
                     case 4:
-
+                        tv_content.setText(null);
+                        builder = new StringBuilder();
+                        //创建10个线程 ，并入线程组中
+                        ThreadGroup group = new ThreadGroup("myGroup_SJY");
+                        MyRunable3 runable3 = new MyRunable3();
+                        for (int i = 0; i < 10; i++) {
+                            MyThread3 thread = new MyThread3(group, runable3, "groupName_SJY", 0);
+                            builder.append("\n当前线程组=" + thread.getThreadGroup().getName() + "--》" + thread.getThreadGroup().activeCount());
+                            thread.start();
+                        }
                         break;
 
                 }
@@ -116,18 +143,19 @@ public class UserDefineThreadActivity extends BaseActivity {
 
             case Constants.TYPE2:
                 tv_content.setText("更新主线程UI-->" + builder.toString());
-//                    Toy
                 break;
+
+            case Constants.TYPE3:
+                tv_content.setText("更新主线程UI-->" + (String) msg.obj);
+                Toast.makeText(this, builder.toString(), Toast.LENGTH_LONG).show();
+                break;
+            case Constants.TYPE4:
+                tv_content.setText("更新主线程UI-->" + builder.toString());
+                break;
+
         }
     }
 
-
-    /**
-     *
-     */
-    private void type() {
-
-    }
 
     //自定义Thread
     private class MyThread extends Thread {
@@ -176,34 +204,11 @@ public class UserDefineThreadActivity extends BaseActivity {
 
         /**
          * 04 有名称的线程，使用Runnable形式
-         *
          */
         public MyThread2(Runnable target, String name) {
             super(target, name);
         }
 
-        /**
-         * 05
-         *
-         * @param group
-         * @param target
-         */
-        public MyThread2(ThreadGroup group, Runnable target) {
-            super(group, target);
-        }
-
-        public MyThread2(ThreadGroup group, String name) {
-            super(group, name);
-        }
-
-
-        public MyThread2(ThreadGroup group, Runnable target, String name) {
-            super(group, target, name);
-        }
-
-        public MyThread2(ThreadGroup group, Runnable target, String name, long stackSize) {
-            super(group, target, name, stackSize);
-        }
 
         @Override
         public void run() {
@@ -213,7 +218,8 @@ public class UserDefineThreadActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            String str = "这是自定义线程的重写的run方法，后执行（sleep 2000ms）";
+
+            String str = "这是自定义线程的重写的run方法，后执行（sleep 2000ms）" + "--》getName=" + getName();
             builder.append("\n" + str);
             //
             Message message = Message.obtain();
@@ -222,5 +228,81 @@ public class UserDefineThreadActivity extends BaseActivity {
             handler.sendMessage(message);
         }
     }
-}
 
+    /**
+     * 自定义Thread
+     *
+     * ThreadGroup详解
+     * 构造 05--08方法，源码显示，最终都调用一个方法，所以使用08演示即可
+     */
+    private class MyThread3 extends Thread {
+        /**
+         * 05
+         *
+         * @param group
+         * @param target
+         */
+        public MyThread3(ThreadGroup group, Runnable target) {
+            super(group, target);
+        }
+
+        /**
+         * 06
+         *
+         * @param group
+         * @param name
+         */
+        public MyThread3(ThreadGroup group, String name) {
+            super(group, name);
+        }
+
+        /**
+         * 07
+         *
+         * @param group
+         * @param target
+         * @param name
+         */
+        public MyThread3(ThreadGroup group, Runnable target, String name) {
+            super(group, target, name);
+        }
+
+        /**
+         * 08
+         *
+         * @param group     指定当前线程的线程组
+         * @param target    需要指定，或者 在自定义线程中重写run
+         * @param name      线程的名称，不指定自动生成
+         * @param stackSize 预期堆栈大小，不指定默认为0
+         */
+        public MyThread3(ThreadGroup group, Runnable target, String name, long stackSize) {
+            super(group, target, name, stackSize);
+        }
+    }
+
+    /**
+     *
+     */
+    private class MyRunable3 implements Runnable {
+        @Override
+        public void run() {
+
+            int num = (int) ((Math.random())*2000+1000);
+
+            try {
+                Thread.sleep(num);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            builder.append("\n当前线程名称=" + Thread.currentThread().getName() + "-->睡眠" + num + "ms");
+
+
+            //
+            Message message = Message.obtain();
+            message.what = Constants.TYPE4;
+            message.obj = "";
+            handler.sendMessage(message);
+        }
+    }
+}
