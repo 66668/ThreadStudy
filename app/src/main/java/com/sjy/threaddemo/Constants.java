@@ -6,4 +6,5 @@ public class Constants {
     public static final int TYPE2 = 2;
     public static final int TYPE3 = 3;
     public static final int TYPE4 = 4;
+    public static final int TYPE5 = 5;
 }
