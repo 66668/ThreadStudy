@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sjy.threaddemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/mokey"
@@ -22,19 +24,30 @@
             android:screenOrientation="portrait" />
 
         <!--方式1：handler+thread-->
-         <activity
+        <activity
             android:name=".invoke_type1.HandlerAndThreadActivity"
             android:screenOrientation="portrait" />
 
         <!--方式1：handler+thread-自定义Thread-->
-         <activity
+        <activity
             android:name=".invoke_type1.userDefineThread.UserDefineThreadActivity"
             android:screenOrientation="portrait" />
 
-        <!--TreadHandler用法-->
-         <activity
+        <!--方式1：TreadHandler用法-->
+        <activity
             android:name=".invoke_type1.threadHandler.ThreadHandlerActivity"
             android:screenOrientation="portrait" />
+
+        <!--方式2：IntentService-->
+        <activity
+            android:name=".invoke_type1.intentService.IntentServiceActivity"
+            android:screenOrientation="portrait" />
+
+        <!--IntentService权限-->
+        <service android:name=".invoke_type1.intentService.MyIntentService1" />
+        <!--IntentService权限-->
+        <service android:name=".invoke_type1.intentService.MyIntentService2" />
+        <service android:name=".invoke_type1.intentService.MyIntentService3" />
 
     </application>
 

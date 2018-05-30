@@ -23,6 +23,11 @@ public class InvokeAdapter extends RecyclerView.Adapter<InvokeAdapter.MyHolder> 
         this.onItemClick = onItemClick;
     }
 
+    public void setmList(List<String> mList) {
+        this.mList = mList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public InvokeAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

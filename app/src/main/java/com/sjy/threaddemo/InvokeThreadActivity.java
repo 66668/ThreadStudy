@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.sjy.threaddemo.adapter.InvokeAdapter;
 import com.sjy.threaddemo.invoke_type1.HandlerAndThreadActivity;
+import com.sjy.threaddemo.invoke_type1.intentService.IntentServiceActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,9 @@ public class InvokeThreadActivity extends Activity {
 
         mList = new ArrayList<>();
         mList.add("方式1：Handler+Thread");
-        mList.add("方式2：Asynctask");
+        mList.add("方式2：IntentService");
         mList.add("方式3：线程池");
-        mList.add("方式4：IntentService");
+        mList.add("方式4：Asynctask");
 
         adapter =new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
@@ -52,6 +53,8 @@ public class InvokeThreadActivity extends Activity {
                         startActivity(intent);
                         break;
                     case 1:
+                        Intent intent2 = new Intent(InvokeThreadActivity.this, IntentServiceActivity.class);
+                        startActivity(intent2);
                         break;
                 }
             }
