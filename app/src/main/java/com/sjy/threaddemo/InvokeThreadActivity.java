@@ -41,7 +41,7 @@ public class InvokeThreadActivity extends Activity {
         mList = new ArrayList<>();
         mList.add("方式1：Handler+Thread的常规使用");
         mList.add("方式2：IntentService（HandlerThread+Handler的异步封装）");
-        mList.add("方式3：AsynctaskI（Handler+Thread的封装）");
+        mList.add("方式3：Asynctask（Handler+Thread的封装）");
         mList.add("方式4：线程池");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
