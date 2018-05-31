@@ -246,6 +246,7 @@ eg2：
  
  
 ###常见用法：
+
 方式1：自定义回调UI
 
 方式2：LocalBroadcastManager触发广播回调UI
