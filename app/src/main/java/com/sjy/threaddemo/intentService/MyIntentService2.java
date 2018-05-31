@@ -1,4 +1,4 @@
-package com.sjy.threaddemo.invoke_type1.intentService;
+package com.sjy.threaddemo.intentService;
 
 import android.app.IntentService;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.sjy.threaddemo.invoke_type1.intentService;
+package com.sjy.threaddemo.intentService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,6 +31,8 @@ import java.util.List;
  * 它拥有较高的优先级，不易被系统杀死（继承自Service的缘故），因此比较适合执行一些高优先级的异步任务
  * 它内部通过HandlerThread和Handler实现异步操作
  * 创建IntentService时，只需实现onHandleIntent和 空构造方法这两步骤即可，onHandleIntent为异步方法，可以执行耗时操作
+ * 为Service的onBind()提供默认实现，返回null；
+ * 为Service的onStartCommand提供默认实现，将请求Intent添加到队列中；
  * 使用步骤：
  * 1:自定义的ItnentService重写onHandleIntent方法
  * 2：在Manifest.xml注册自定义的ItnentService
@@ -198,7 +200,7 @@ public class IntentServiceActivity extends BaseActivity {
                     break;
                 case "type3":
                     builder.append(intent.getStringExtra("result"));
-                    tv_content.setText("方法3："+builder.toString());
+                    tv_content.setText("方法3：" + builder.toString());
                     break;
             }
         }
@@ -225,7 +227,7 @@ public class IntentServiceActivity extends BaseActivity {
 
         Intent intent = new Intent(this, MyIntentService3.class);
         //二选一，设置onHandleIntent的2个处理情况
-        intent.putExtra("type",Constants.TYPE0);
+        intent.putExtra("type", Constants.TYPE0);
 //        intent.putExtra("type", Constants.TYPE1);
         //启动服务
         startService(intent);

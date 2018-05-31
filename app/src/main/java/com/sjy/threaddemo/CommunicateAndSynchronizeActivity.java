@@ -9,14 +9,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sjy.threaddemo.adapter.MainAdapter;
+import com.sjy.threaddemo.adapter.InvokeAdapter;
+import com.sjy.threaddemo.intentService.IntentServiceActivity;
+import com.sjy.threaddemo.invoke_type1.HandlerAndThreadActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+/**
+ *
+ */
+public class CommunicateAndSynchronizeActivity extends Activity {
     private List<String> mList;
-    private MainAdapter adapter;
+    private InvokeAdapter adapter;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     private TextView title, tv_content;
@@ -29,23 +34,30 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.recyclerView);
         title = findViewById(R.id.tv_title);
         tv_content = findViewById(R.id.tv_content);
-        title.setText("首页");
+        title.setText("线程间通讯与同步问题");
         tv_content.setVisibility(View.GONE);
 
         mList = new ArrayList<>();
-        mList.add("四种线程调用");
-        mList.add("线程同步及线程通讯详解");
+        mList.add("线程间的通讯");
+        mList.add("方式2：IntentService");
+        mList.add("方式3：Asynctask");
+        mList.add("方式4：线程池");
 
-        adapter = new MainAdapter(this, mList, new MainAdapter.OnItemClick() {
+        adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
             public void onItemClick(int position) {
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(MainActivity.this, InvokeThreadActivity.class);
+                        Intent intent = new Intent(CommunicateAndSynchronizeActivity.this, HandlerAndThreadActivity.class);
                         startActivity(intent);
-
                         break;
                     case 1:
+                        Intent intent2 = new Intent(CommunicateAndSynchronizeActivity.this, IntentServiceActivity.class);
+                        startActivity(intent2);
+
+                    case 2:
+                        Intent intent3 = new Intent(CommunicateAndSynchronizeActivity.this, IntentServiceActivity.class);
+                        startActivity(intent3);
                         break;
                 }
             }
@@ -57,5 +69,13 @@ public class MainActivity extends Activity {
         recyclerView.setAdapter(adapter);
 
     }
+
+    /**
+     *
+     */
+    private void type1() {
+
+    }
+
 }
 

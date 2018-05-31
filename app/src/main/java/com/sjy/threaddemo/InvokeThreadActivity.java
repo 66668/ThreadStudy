@@ -10,15 +10,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sjy.threaddemo.adapter.InvokeAdapter;
+import com.sjy.threaddemo.asynctask.AsyncTaskActivity;
+import com.sjy.threaddemo.intentService.IntentServiceActivity;
 import com.sjy.threaddemo.invoke_type1.HandlerAndThreadActivity;
-import com.sjy.threaddemo.invoke_type1.intentService.IntentServiceActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 四种线程方式:
- *
  */
 public class InvokeThreadActivity extends Activity {
     private List<String> mList;
@@ -39,12 +39,12 @@ public class InvokeThreadActivity extends Activity {
         tv_content.setVisibility(View.GONE);
 
         mList = new ArrayList<>();
-        mList.add("方式1：Handler+Thread");
-        mList.add("方式2：IntentService");
-        mList.add("方式3：线程池");
-        mList.add("方式4：Asynctask");
+        mList.add("方式1：Handler+Thread的常规使用");
+        mList.add("方式2：IntentService（HandlerThread+Handler的异步封装）");
+        mList.add("方式3：AsynctaskI（Handler+Thread的封装）");
+        mList.add("方式4：线程池");
 
-        adapter =new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
+        adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
             public void onItemClick(int position) {
                 switch (position) {
@@ -55,6 +55,10 @@ public class InvokeThreadActivity extends Activity {
                     case 1:
                         Intent intent2 = new Intent(InvokeThreadActivity.this, IntentServiceActivity.class);
                         startActivity(intent2);
+
+                    case 2:
+                        Intent intent3 = new Intent(InvokeThreadActivity.this, AsyncTaskActivity.class);
+                        startActivity(intent3);
                         break;
                 }
             }
@@ -70,7 +74,7 @@ public class InvokeThreadActivity extends Activity {
     /**
      *
      */
-    private void type1(){
+    private void type1() {
 
     }
 

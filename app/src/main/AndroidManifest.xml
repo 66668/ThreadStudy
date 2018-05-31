@@ -40,14 +40,19 @@
 
         <!--方式2：IntentService-->
         <activity
-            android:name=".invoke_type1.intentService.IntentServiceActivity"
+            android:name=".intentService.IntentServiceActivity"
             android:screenOrientation="portrait" />
 
         <!--IntentService权限-->
-        <service android:name=".invoke_type1.intentService.MyIntentService1" />
+        <service android:name=".intentService.MyIntentService1" />
         <!--IntentService权限-->
-        <service android:name=".invoke_type1.intentService.MyIntentService2" />
-        <service android:name=".invoke_type1.intentService.MyIntentService3" />
+        <service android:name=".intentService.MyIntentService2" />
+        <service android:name=".intentService.MyIntentService3" />
+
+        <!--方式3：AsyncTask-->
+        <activity
+            android:name=".asynctask.AsyncTaskActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 
