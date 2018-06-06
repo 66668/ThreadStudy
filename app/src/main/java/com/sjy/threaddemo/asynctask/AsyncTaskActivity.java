@@ -68,13 +68,13 @@ public class AsyncTaskActivity extends BaseActivity {
         mList = new ArrayList<>();
         mList.add("方式1：原生用法execute无参");
         mList.add("方式2：原生用法execute有参");
-        mList.add("方式2：封装用法");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
             public void onItemClick(int position) {
                 switch (position) {
                     case 0:
+
                         if(!isStop){
                             startType0();
                             mList.remove(0);
@@ -82,6 +82,7 @@ public class AsyncTaskActivity extends BaseActivity {
                             adapter.setmList(mList);
                             isStop =true;
                         }else{
+
                             //TODO 取消后，需要等待异步执行完才执行取消方法
                             asyncTask0.cancel(true);
                             mList.remove(0);

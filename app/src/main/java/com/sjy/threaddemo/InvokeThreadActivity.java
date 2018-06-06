@@ -13,6 +13,7 @@ import com.sjy.threaddemo.adapter.InvokeAdapter;
 import com.sjy.threaddemo.asynctask.AsyncTaskActivity;
 import com.sjy.threaddemo.intentService.IntentServiceActivity;
 import com.sjy.threaddemo.invoke_type1.HandlerAndThreadActivity;
+import com.sjy.threaddemo.threadpool.ThreadPoolActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +56,14 @@ public class InvokeThreadActivity extends Activity {
                     case 1:
                         Intent intent2 = new Intent(InvokeThreadActivity.this, IntentServiceActivity.class);
                         startActivity(intent2);
-
+                        break;
                     case 2:
                         Intent intent3 = new Intent(InvokeThreadActivity.this, AsyncTaskActivity.class);
                         startActivity(intent3);
+                        break;
+                    case 3:
+                        Intent intent4 = new Intent(InvokeThreadActivity.this, ThreadPoolActivity.class);
+                        startActivity(intent4);
                         break;
                 }
             }

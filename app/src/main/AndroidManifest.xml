@@ -53,6 +53,14 @@
         <activity
             android:name=".asynctask.AsyncTaskActivity"
             android:screenOrientation="portrait" />
+        <!--方式4：线程池-->
+        <activity
+            android:name=".threadpool.ThreadPoolActivity"
+            android:screenOrientation="portrait" />
+     <!--方式4：线程池->ExecutorService-->
+        <activity
+            android:name=".threadpool.ExecutorServiceActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 
