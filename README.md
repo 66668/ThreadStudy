@@ -1,5 +1,5 @@
 #线程学习 基础与进阶
-
+说明：线程方面的只是
 ##内容概括
 
 1android 常用四种调用线程的方法,及特殊线程HandlerThread;
@@ -252,3 +252,106 @@ eg2：
 方式2：LocalBroadcastManager触发广播回调UI
 
 方式3：act触发广播回调UI
+
+##四 线程池介绍：
+###1Executors类详解：
+
+ 使用说明，其下有6类线程创建方式，还有其他三个辅助方法
+
+  =========================================6类线程创建=======================================
+  
+  (1)
+  
+  public static ExecutorService newSingleThreadExecutor()
+  
+  public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory)
+  
+  用于创建只有一个线程的线程池
+  hreadFactory，自定义创建线程时的行为
+
+  (2)
+  
+  public static ExecutorService newCachedThreadPool()
+  
+  public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory)
+  
+  用于创建线程数数目可以随着实际情况自动调节的线程池
+  当线程池有很多任务需要处理时，会不断地创建新线程，当任务处理完毕之后，如果某个线程空闲时间大于60s，则该线程将会被销毁。
+  因为这种线程池能够自动调节线程数量，所以比较适合执行大量的短期的小任务
+ 
+  (3)
+  
+  public static ScheduledExecutorService newSingleThreadScheduledExecutor()
+  
+  public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory)
+  
+  用于创建只有一个线程的线程池，并且该线程定时周期性地执行给定的任务
+  说明：线程在周期性地执行任务时如果遇到Exception，则以后将不再周期性地执行任务
+ 
+  (4)
+  
+  public static ExecutorService newFixedThreadPool(int nThreads)
+  
+  public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory)
+  
+  用于创建一个最大线程数的固定的线程池，多余任务存储在队列中，等待线程池某一个线程完成任务，后续任务补充进去继续使用，总之，保持最大线程数不变
+  threadFactory是线程工厂类，主要用于自定义线程池中创建新线程时的行为
+  
+  （5）
+  
+  public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)
+  
+  public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory)
+  
+  用于创建一个线程池，线程池中得线程能够周期性地执行给定的任务
+
+  (6)
+  
+  public static ExecutorService newWorkStealingPool(int parallelism)
+  
+  public static ExecutorService newWorkStealingPool()
+  
+  用于创建ForkJoin框架中用到的ForkJoinPool线程池，参数parallelism用于指定并行数，默认使用当前机器可用的CPU个数作为并行数。
+  
+  =============================================其他方法==============================================
+  
+  (7)
+  
+  public static ExecutorService unconfigurableExecutorService(ExecutorService executor)
+  
+  用于包装现有的线程池，包装之后的线程池不能修改，相当于final
+  
+  (8)
+  
+  public static ScheduledExecutorService unconfigurableScheduledExecutorService(ScheduledExecutorService executor)
+  
+  用于包装可以周期性执行任务的线程池，包装之后的线程池不能修改，相当于final
+  
+  (9)
+  
+  public static ThreadFactory defaultThreadFactory()
+  
+  返回默认的工厂方法类，默认的工厂方法为线程池中新创建的线程命名为：pool-[虚拟机中线程池编号]-thread-[线程编号
+  
+  (10)
+  
+  public static ThreadFactory privilegedThreadFactory()
+  
+  返回用于创建新线程的线程工厂，这些新线程与当前线程具有相同的权限。此工厂创建具有与 defaultThreadFactory() 相同设置的线程，
+    新线程的 AccessControlContext 和 contextClassLoader 的其他设置与调用此 privilegedThreadFactory 方法的线程相同。可以在 AccessController.doPrivileged(java.security.PrivilegedAction) 操作中创建一个新 privilegedThreadFactory，设置当前线程的访问控制上下文，以便创建具有该操作中保持的所选权限的线程。
+    注意，虽然运行在此类线程中的任务具有与当前线程相同的访问控制和类加载器，但是它们无需具有相同的 ThreadLocal
+    或 InheritableThreadLocal 值。如有必要，使用 ThreadPoolExecutor.beforeExecute(java.lang.Thread, java.lang.Runnable)
+    在 ThreadPoolExecutor 子类中运行任何任务前，可以设置或重置线程局部变量的特定值。
+    另外，如果必须初始化 worker 线程，以具有与某些其他指定线程相同的 InheritableThreadLocal 设置，
+    则可以在线程等待和服务创建请求的环境中创建自定义的 ThreadFactory，而不是继承其值。
+    
+ (11)
+ 
+        public static Callable <Object> callable(Runnable task) 
+  运行给定的任务并返回 null
+   
+        public static <T> Callable<T> callable(Runnable task,T result) 
+  运行给定的任务并返回给定的结果。这在把需要 Callable 的方法应用到其他无结果的操作时很有用
+   
+        public static Callable<Object> callable(PrivilegedAction<?> action) 
+  运行给定特权的操作并返回其结果
