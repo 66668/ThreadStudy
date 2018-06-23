@@ -130,8 +130,8 @@ public class ExecutorServiceActivity extends BaseActivity {
         mList.add("01 ExecutorService--Executors.newSingleThreadExecutor()");
         mList.add("02 ExecutorService--Executors.newCachedThreadPool()");
         mList.add("03 ExecutorService--Executors.newFixedThreadPool(int nThreads)");
-        mList.add("04 ExecutorService--Executors.newSingleThreadScheduledExecutor()");
-        mList.add("05 ExecutorService--Executors.newScheduledThreadPool(int nThreads)");
+        mList.add("04 ScheduledExecutorService--Executors.newSingleThreadScheduledExecutor()");
+        mList.add("05 ScheduledExecutorService--Executors.newScheduledThreadPool(int nThreads)");
         mList.add("06 ExecutorService--Executors.newWorkStealingPool()");
 
         mList.add("07 ExecutorService--Executors.newSingleThreadExecutor(ThreadFactory threadFactory)");
