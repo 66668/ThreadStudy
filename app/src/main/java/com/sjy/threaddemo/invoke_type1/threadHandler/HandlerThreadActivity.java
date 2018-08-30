@@ -32,8 +32,13 @@ import java.util.List;
  * <p>
  * 2.Handler类内部的Looper默认绑定的是UI线程的消息队列，对于非UI线程如果需要使用消息机制，
  * 自己去创建Looper较繁琐，由于HandlerThread内部已经自动创建了Looper，直接使用HandlerThread更方便。
+ *
+ * Message介绍：
+ * 我们最好通过Message.obtain()和Handler.obtatinMessage()来得到一个Message对象
+ * （通过这两个方法得到的对象是从对象回收池中得到，也就是说是复用已经处理完的Message对象，而不是重新生成一个新对象）
+ * ，如果通过Message的构造方法得到一个Message对象，则这个Message对象是重新生成的（不建议使用这种方法）
  */
-public class ThreadHandlerActivity extends BaseActivity {
+public class HandlerThreadActivity extends BaseActivity {
     private List<String> mList;
     private InvokeAdapter adapter;
     private LinearLayoutManager manager;

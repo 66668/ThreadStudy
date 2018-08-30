@@ -13,7 +13,7 @@ import com.sjy.threaddemo.BaseActivity;
 import com.sjy.threaddemo.Constants;
 import com.sjy.threaddemo.R;
 import com.sjy.threaddemo.adapter.InvokeAdapter;
-import com.sjy.threaddemo.invoke_type1.threadHandler.ThreadHandlerActivity;
+import com.sjy.threaddemo.invoke_type1.threadHandler.HandlerThreadActivity;
 import com.sjy.threaddemo.invoke_type1.userDefineThread.UserDefineThreadActivity;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class HandlerAndThreadActivity extends BaseActivity implements Runnable {
                         break;
 
                     case 5:
-                        Intent intent1 = new Intent(HandlerAndThreadActivity.this, ThreadHandlerActivity.class);
+                        Intent intent1 = new Intent(HandlerAndThreadActivity.this, HandlerThreadActivity.class);
                         intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent1);
 

@@ -35,7 +35,7 @@
 
         <!--方式1：TreadHandler用法-->
         <activity
-            android:name=".invoke_type1.threadHandler.ThreadHandlerActivity"
+            android:name=".invoke_type1.threadHandler.HandlerThreadActivity"
             android:screenOrientation="portrait" />
 
         <!--方式2：IntentService-->

@@ -26,21 +26,25 @@ import java.util.List;
 
 /**
  * #源码解析AsyncTask：
- *（1） AsyncTask内部new ThreadPoolExecutor()，初始化一个静态的线程池
- *（2）接着实例化了AsyncTask内部类SerialExecutor，该类实现了Executor接口中的execute方法，用于串行执行任务
- *（3）AsyncTask的构造，分别初始化了WorkerRunnable（实未 Callback接口）的call方法和FutureTask类，FutureTask的任务执行完成或任务取消的时候会执行FutureTask的done方法
+ * （1） AsyncTask内部new ThreadPoolExecutor()，初始化一个静态的线程池
+ * （2）接着实例化了AsyncTask内部类SerialExecutor，该类实现了Executor接口中的execute方法，用于串行执行任务
+ * （3）AsyncTask的构造，分别初始化了WorkerRunnable（实为 Callback接口）的call方法和FutureTask类，FutureTask的任务执行完成或任务取消的时候会执行FutureTask的done方法
  * (4)接着，UI就可以执行execute（）方法（里头复杂但好理解），最后将结果封装到一个内部类中，用handler处理
- *
+ * <p>
  * #使用AsyncTask常见问题：
  * 开启线程后，未结束，此时用户又一次，甚至多次开启线程，导致多次请求。
  * 解决方式：将线程写为静态static。（静态过多容易导致手机内存不足，适量即可）
  * 当用户开启线程后，退出界面，多次进入。由于线程持有Activity的变量的实例，导致Activity无法被回收，从而导致内存泄漏
  * 解决方式：采用弱引用的方式，将线程与Activity进行解耦
- *
+ * <p>
  * #AsyncTask优点：
- *为了方便我们在后台线程中执行操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作
- *
- *
+ * 为了方便我们在后台线程中执行操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作
+ * <p>
+ * #AsyncTask各方法的调用顺序：
+ * （1）onPreExecute()：任务执行前调用
+ * （2）doInBackground(Params...)：在工作线程中执行任务
+ * （3）onProgressUpdate(Progress...)：更新正在后台执行任务的进度，在UI线程中工作，可用来向通知用户任务现在的完成进度（可更新UI），在调用这个方法前，需要在第2个步骤里调用 publishProgress(Progress...)将进度传递给这个方法
+ * (4)onPostExecute(Result):后台任务完成后，会将结果返回给这个方法
  */
 public class AsyncTaskActivity extends BaseActivity {
     private List<String> mList;
@@ -68,6 +72,7 @@ public class AsyncTaskActivity extends BaseActivity {
         mList = new ArrayList<>();
         mList.add("方式1：原生用法execute无参");
         mList.add("方式2：原生用法execute有参");
+        mList.add("方式3：自定义AsyncTask");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
@@ -75,24 +80,27 @@ public class AsyncTaskActivity extends BaseActivity {
                 switch (position) {
                     case 0:
 
-                        if(!isStop){
+                        if (!isStop) {
                             startType0();
                             mList.remove(0);
                             mList.add(0, "取消");
                             adapter.setmList(mList);
-                            isStop =true;
-                        }else{
+                            isStop = true;
+                        } else {
 
                             //TODO 取消后，需要等待异步执行完才执行取消方法
                             asyncTask0.cancel(true);
                             mList.remove(0);
                             mList.add(0, "方式1：原生用法execute无参");
                             adapter.setmList(mList);
-                            isStop =false;
+                            isStop = false;
                         }
                         break;
                     case 1:
                         startType1();
+                        break;
+                    case 2:
+                        startType2();
                         break;
                 }
             }
@@ -109,7 +117,8 @@ public class AsyncTaskActivity extends BaseActivity {
      * ==================================方法1：原生用法execute,进度条==================================
      */
     private boolean isStop = false;
-    private  AsyncTask asyncTask0;
+    private AsyncTask asyncTask0;
+
     /**
      * 原生asyncTask用法及工作顺序
      * 无参触发异步(强引用)
@@ -136,7 +145,7 @@ public class AsyncTaskActivity extends BaseActivity {
              */
             @Override
             protected Object doInBackground(Object[] objects) {
-                for(int i = 0;i<100;i++){
+                for (int i = 0; i < 100; i++) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -194,7 +203,7 @@ public class AsyncTaskActivity extends BaseActivity {
     }
 
     /**
-     * ============================================模拟下载图片，并实时回调显示==================================================
+     * ============================================方法2模拟下载图片，并实时回调显示==================================================
      * 原生asyncTask用法及工作顺序
      * 有参触发异步(强引用)
      */
@@ -220,7 +229,7 @@ public class AsyncTaskActivity extends BaseActivity {
              */
             @Override
             protected Object doInBackground(Object[] objects) {
-                for(Object url :objects){
+                for (Object url : objects) {
                     Bitmap bitmap = downloadUrlBitmap((String) url);
                     publishProgress(bitmap);//触发onProgressUpdate
                     try {
@@ -256,7 +265,7 @@ public class AsyncTaskActivity extends BaseActivity {
                 super.onPostExecute(o);
                 builder.append("-->onPostExecute（Object）\n");
                 tv_content.setText(builder.toString());
-                Toast.makeText(AsyncTaskActivity.this,"onPostExecute加载完成",Toast.LENGTH_LONG).show();
+                Toast.makeText(AsyncTaskActivity.this, "onPostExecute加载完成", Toast.LENGTH_LONG).show();
             }
 
             /**
@@ -269,7 +278,7 @@ public class AsyncTaskActivity extends BaseActivity {
 
                 builder.append("-->onPostExecute（Object）\n");
                 tv_content.setText(builder.toString());
-                Toast.makeText(AsyncTaskActivity.this,"onCancelled(o)",Toast.LENGTH_LONG).show();
+                Toast.makeText(AsyncTaskActivity.this, "onCancelled(o)", Toast.LENGTH_LONG).show();
             }
 
             /**
@@ -280,7 +289,7 @@ public class AsyncTaskActivity extends BaseActivity {
                 super.onCancelled();
                 builder.append("-->onCancelled（）\n");
                 tv_content.setText(builder.toString());
-                Toast.makeText(AsyncTaskActivity.this,"onCancelled()",Toast.LENGTH_LONG).show();
+                Toast.makeText(AsyncTaskActivity.this, "onCancelled()", Toast.LENGTH_LONG).show();
 
             }
         };
@@ -325,10 +334,110 @@ public class AsyncTaskActivity extends BaseActivity {
         }
         return bitmap;
     }
+
     /**
-     *
+     * ==================================方法3：自定义:进度条+图片显示==================================
      */
 
+
+    private void startType2(){
+        builder = new StringBuilder();
+        MyAsyncTask asyncTask = new MyAsyncTask();
+        asyncTask.execute(url);
+    }
+
+
+    /**
+     * 三个参数含义：
+     * 1：doInBackground使用的参数
+     * 2:onProgressUpdate使用（）前提doInBackground调用publishProgress()
+     * 3:调用结束onPostExecute使用
+     */
+    private class MyAsyncTask extends AsyncTask<String, Bitmap, Integer> {
+
+        /**
+         * 01
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.append("onPreExecute\n");
+            tv_content.setText(builder.toString());
+        }
+
+        /**
+         * 02
+         *
+         * @param strings
+         * @return
+         */
+        @Override
+        protected Integer doInBackground(String... strings) {
+            for (String url : strings) {
+                Bitmap bitmap = downloadUrlBitmap( url);
+                publishProgress(bitmap);//触发onProgressUpdate
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return null;
+        }
+
+        /**
+         * 03
+         *
+         * @param values
+         */
+        @Override
+        protected void onProgressUpdate(Bitmap... values) {
+            super.onProgressUpdate(values);
+            builder.append("-->onProgressUpdate\n");
+            tv_content.setText(builder.toString());
+            //显示图
+            img.setImageBitmap((Bitmap) values[0]);
+        }
+
+        /**
+         * 04
+         *
+         * @param integer
+         */
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            builder.append("-->onPostExecute（Object）\n");
+            tv_content.setText(builder.toString());
+            Toast.makeText(AsyncTaskActivity.this, "onPostExecute加载完成", Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * 05
+         *
+         * @param integer
+         */
+        @Override
+        protected void onCancelled(Integer integer) {
+            super.onCancelled(integer);
+            builder.append("-->onPostExecute（Object）\n");
+            tv_content.setText(builder.toString());
+            Toast.makeText(AsyncTaskActivity.this, "onCancelled(o)", Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * 05
+         */
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            builder.append("-->onCancelled（）\n");
+            tv_content.setText(builder.toString());
+            Toast.makeText(AsyncTaskActivity.this, "onCancelled()", Toast.LENGTH_LONG).show();
+
+        }
+    }
 
 }
 
