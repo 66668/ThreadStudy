@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * ThreadHandler的研究:
  * HandlerThread特点:
- * 1本质是线程，继承与Thread
+ * 1本质是线程，继承于Thread
  * 2HandlerThread内部有自己的Looper对象,可以在当前线程中处理分发消息
  * 3通过获取HandlerThread的looper对象传递给Handler对象，可以在handleMessage方法中执行异步任务
  * <p>
