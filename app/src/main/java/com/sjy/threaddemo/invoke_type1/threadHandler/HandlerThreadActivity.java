@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ThreadHandler的研究:
+ * HandlerThread的研究:
  * HandlerThread特点:
  * 1本质是线程，继承于Thread
  * 2HandlerThread内部有自己的Looper对象,可以在当前线程中处理分发消息
@@ -37,6 +37,8 @@ import java.util.List;
  * 我们最好通过Message.obtain()和Handler.obtatinMessage()来得到一个Message对象
  * （通过这两个方法得到的对象是从对象回收池中得到，也就是说是复用已经处理完的Message对象，而不是重新生成一个新对象）
  * ，如果通过Message的构造方法得到一个Message对象，则这个Message对象是重新生成的（不建议使用这种方法）
+ *
+ * 本类主要讲解 HandlerThread+handler的使用
  */
 public class HandlerThreadActivity extends BaseActivity {
     private List<String> mList;
