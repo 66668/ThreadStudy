@@ -32,7 +32,7 @@ import java.util.List;
  * <p>
  * 2.Handler类内部的Looper默认绑定的是UI线程的消息队列，对于非UI线程如果需要使用消息机制，
  * 自己去创建Looper较繁琐，由于HandlerThread内部已经自动创建了Looper，直接使用HandlerThread更方便。
- *
+ * <p>
  * Message介绍：
  * 我们最好通过Message.obtain()和Handler.obtatinMessage()来得到一个Message对象
  * （通过这两个方法得到的对象是从对象回收池中得到，也就是说是复用已经处理完的Message对象，而不是重新生成一个新对象）
@@ -45,7 +45,7 @@ public class HandlerThreadActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private TextView title, tv_content;
     private StringBuilder builder;
-
+    int result = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +61,7 @@ public class HandlerThreadActivity extends BaseActivity {
         mList.add("用法2：Handler(Looper looper）{handleMessage}执行异步");
         mList.add("用法3：handler.post(runnable)执行异步");
         mList.add("用法4:验证handler的post和重写handleMessage的执行顺序");
-        mList.add("");
+        mList.add("用法5：RunOnUiThread(子线程中封装handler消息传递与处理)");
 
         adapter = new InvokeAdapter(this, mList, new InvokeAdapter.OnItemClick() {
             @Override
@@ -197,13 +197,45 @@ public class HandlerThreadActivity extends BaseActivity {
                                 builder.append("handler.post先执行-->" + Thread.currentThread().getName() + "\n");
                                 Message message = Message.obtain();
                                 message.what = Constants.TYPE3;
-                                message.obj = "" ;
+                                message.obj = "";
                                 handler.sendMessage(message);
                             }
                         });
 
                         //触发 异步handler
                         childHandler4.sendEmptyMessage(Constants.TYPE3);
+                        break;
+                    case 4:
+                        //开启一个子线程：Thread为例，
+                        tv_content.setText("");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                //子线程耗时操作，
+                                result = 0;
+                                for (int i = 1; i < 1000000; i++) {
+                                    if (i % 2 == 0) {
+                                        result = i / 2 + result;
+                                    } else {
+                                        result = result - i;
+                                    }
+                                }
+                                //子线程中将结果传递给UI
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //UI操作即可
+                                        tv_content.setText("runOnUiThread更新主线程UI-->" +result);
+                                    }
+                                });
+
+                            }
+                        }).start();
                         break;
                 }
             }
@@ -232,7 +264,7 @@ public class HandlerThreadActivity extends BaseActivity {
                 break;
 
             case Constants.TYPE3:
-                tv_content.setText( builder.toString());
+                tv_content.setText(builder.toString());
                 break;
         }
     }
